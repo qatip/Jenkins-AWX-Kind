@@ -19,7 +19,7 @@ pipeline {
 
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/qatip/my-jenkins-terraform.git'
+        git branch: 'main', url: 'https://github.com/qatip/jenkinsdemo.git'
       }
     }
 
@@ -70,44 +70,68 @@ PY
     stage('Capture VM IP') {
       steps {
         script {
-          def vmIp = sh(script: 'cd terraform-vm && terraform output -raw vm_private_ip', returnStdout: true).trim()
+          def vmIp = sh(
+            script: 'cd terraform-vm && terraform output -raw vm_private_ip',
+            returnStdout: true
+          ).trim()
           echo "VM private IP: ${vmIp}"
           env.NEW_VM_IP = vmIp
         }
       }
     }
-  stage('Report to AWX') {
-  steps {
-    withCredentials([string(credentialsId: 'awx_api_token', variable: 'AWX_TOKEN')]) {
-      script {
-        def vmIp = env.NEW_VM_IP
 
-        def status = sh(
-          script: """
-            set -e
+    stage('Add host to AWX inventory') {
+      steps {
+        withCredentials([string(credentialsId: 'awx_api_token', variable: 'AWX_TOKEN')]) {
+          script {
+            def vmIp = env.NEW_VM_IP
+            sh """
+              set -e
+              AWX_URL="http://4.180.89.85:30080"
+              INVENTORY_ID=2
 
-            AWX_URL="http://10.40.1.5:30080"
-            JOB_TEMPLATE_ID=12
+              echo "Creating host ${vmIp} in AWX inventory \$INVENTORY_ID ..."
 
-            echo "Triggering AWX for host ${vmIp} ..."
-
-            curl -k -s -o /tmp/awx_resp.json -w "%{http_code}" \\
-              -H "Authorization: Bearer ${AWX_TOKEN}" \\
-              -H "Content-Type: application/json" \\
-              -d '{\"extra_vars\": {\"target_host\": \"${vmIp}\"}}' \\
-              "\$AWX_URL/api/v2/job_templates/\$JOB_TEMPLATE_ID/launch/"
-          """,
-          returnStatus: true
-        )
-
-        echo "AWX curl exit code: ${status}"
+              curl -k -s -X POST \\
+                -H "Authorization: Bearer ${AWX_TOKEN}" \\
+                -H "Content-Type: application/json" \\
+                -d '{ "name": "${vmIp}", "variables": "ansible_host: ${vmIp}\\n" }' \\
+                "\$AWX_URL/api/v2/inventories/\$INVENTORY_ID/hosts/"
+            """
+          }
+        }
       }
     }
-  }
-}
 
+    stage('Report to AWX') {
+      steps {
+        withCredentials([string(credentialsId: 'awx_api_token', variable: 'AWX_TOKEN')]) {
+          script {
+            def vmIp = env.NEW_VM_IP
+            def status = sh(
+              script: """
+                set -e
 
-  }
+                AWX_URL="http://4.180.89.85:30080"
+                JOB_TEMPLATE_ID=9
+
+                echo "Triggering AWX for host ${vmIp} ..."
+
+                curl -k -s -o /tmp/awx_resp.json -w "%{http_code}" \\
+                  -H "Authorization: Bearer ${AWX_TOKEN}" \\
+                  -H "Content-Type: application/json" \\
+                  -d '{\"extra_vars\": {\"target_host\": \"${vmIp}\"}}' \\
+                  "\$AWX_URL/api/v2/job_templates/\$JOB_TEMPLATE_ID/launch/"
+              """,
+              returnStatus: true
+            )
+            echo "AWX curl exit code: ${status}"
+          }
+        }
+      }
+    }
+
+  } // end stages
 
   post {
     success {

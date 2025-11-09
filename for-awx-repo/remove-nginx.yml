@@ -1,22 +1,19 @@
----
-- name: Uninstall NGINX from VM
-  hosts: all
+- hosts: all
   become: yes
   tasks:
-    - name: Stop NGINX service
-      service:
-        name: nginx
-        state: stopped
-      ignore_errors: yes
-
-    - name: Uninstall NGINX package
+    - name: Ensure NGINX is installed
       apt:
         name: nginx
-        state: absent
-        purge: yes
+        state: present
         update_cache: yes
 
-    - name: Remove default web files
-      file:
-        path: /var/www/html
-        state: absent
+    - name: Show deprovisioned page
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+            <body style="font-family: sans-serif; text-align:center; padding:50px;">
+              <h1>Environment cleaned up</h1>
+              <p>This site was deprovisioned by AWX.</p>
+            </body>
+          </html>
