@@ -1,4 +1,4 @@
-subscription = "316f0ed4-2796-4561-a734-24b156826ae5"
+subscription = "sub-id"
 location = "westeurope"
 rg_name = "RG1"
 admin_username = "azureuser"
