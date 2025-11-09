@@ -1,14 +1,16 @@
 terraform {
+  backend "azurerm" {
+    resource_group_name  = "RG6"
+    storage_account_name = "tfstate0589912c"
+    container_name       = "tfstate"
+    key                  = "jenkins-awx.tfstate"
+  }
   required_version = ">= 1.5.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
       version = ">= 3.107.0"
     }
-#    random = {
-#      source  = "hashicorp/random"
-#      version = ">= 3.6.0"
-#    }
   }
 }
 
@@ -55,6 +57,8 @@ resource "azurerm_subnet" "subnet" {
   address_prefixes     = [var.subnet_prefix]
 }
 
+
+/*
 resource "azurerm_network_security_group" "nsg" {
   name                = "rg1-nsg-shared"
   location            = azurerm_resource_group.rg.location
@@ -124,6 +128,92 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "Internet"
   }
 }
+*/
+
+resource "azurerm_network_security_group" "nsg" {
+  name                = "rg1-nsg-shared"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+
+  # SSH from your workstation
+  security_rule {
+    name                       = "Allow-SSH-22"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_ranges    = ["22"]
+    source_address_prefix      = var.allow_inbound_cidr
+    destination_address_prefix = "*"
+  }
+
+  # Jenkins UI from your workstation
+  security_rule {
+    name                       = "Allow-Jenkins-8080"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_ranges    = ["8080"]
+    source_address_prefix      = var.allow_inbound_cidr
+    destination_address_prefix = "*"
+  }
+
+  # AWX from your workstation (public)
+  security_rule {
+    name                       = "Allow-AWX-30080"
+    priority                   = 120
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_ranges    = ["30080"]
+    source_address_prefix      = var.allow_inbound_cidr
+    destination_address_prefix = "*"
+  }
+
+  # HTTP from your workstation
+  security_rule {
+    name                       = "Allow-HTTP-80"
+    priority                   = 130
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_ranges    = ["80"]
+    source_address_prefix      = var.allow_inbound_cidr
+    destination_address_prefix = "*"
+  }
+
+  # Allow VNet-internal traffic to the same ports
+  security_rule {
+    name                       = "Allow-VNet-to-AWX"
+    priority                   = 140
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_ranges    = ["80", "30080"]
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "*"
+  }
+
+  # Default outbound allow
+  security_rule {
+    name                       = "Allow-Internet-Outbound"
+    priority                   = 1000
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "Internet"
+  }
+}
+
 
 # Associate NSG to the subnet so both VMs share the same rules
 resource "azurerm_subnet_network_security_group_association" "subnet_assoc" {
