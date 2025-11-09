@@ -1,0 +1,22 @@
+---
+- name: Uninstall NGINX from VM
+  hosts: all
+  become: yes
+  tasks:
+    - name: Stop NGINX service
+      service:
+        name: nginx
+        state: stopped
+      ignore_errors: yes
+
+    - name: Uninstall NGINX package
+      apt:
+        name: nginx
+        state: absent
+        purge: yes
+        update_cache: yes
+
+    - name: Remove default web files
+      file:
+        path: /var/www/html
+        state: absent

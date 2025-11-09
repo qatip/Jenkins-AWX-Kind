@@ -1,0 +1,44 @@
+- hosts: all
+  become: yes
+  vars:
+    web_root: /var/www/html
+  tasks:
+    - name: Ensure APT cache is up to date
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install NGINX
+      apt:
+        name: nginx
+        state: present
+
+    - name: Ensure NGINX is running and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Ensure web root exists
+      file:
+        path: "{{ web_root }}"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Deploy Nationwide demo homepage
+      copy:
+        src: files/index.html
+        dest: "{{ web_root }}/index.html"
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+    - name: Deploy logo
+      copy:
+        src: files/logo.png
+        dest: "{{ web_root }}/logo.png"
+        owner: www-data
+        group: www-data
+        mode: '0644'

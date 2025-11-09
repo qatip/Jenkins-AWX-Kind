@@ -1,0 +1,14 @@
+#cloud-config
+package_update: true
+package_upgrade: false
+
+write_files:
+  - path: /usr/local/bin/setup_jenkins_azure.sh
+    owner: root:root
+    permissions: '0755'
+    encoding: b64
+    content: ${script_b64}
+
+runcmd:
+  - [ bash, -lc, "/usr/local/bin/setup_jenkins_azure.sh > /var/log/jenkins_install.log 2>&1" ]
+  - [ bash, -lc, "for i in {1..60}; do if [ -s /var/lib/jenkins/secrets/initialAdminPassword ]; then P=$(cat /var/lib/jenkins/secrets/initialAdminPassword); echo \"JENKINS_INITIAL_ADMIN_PASSWORD=$P\" | tee /root/jenkins_initial_admin_password.txt | tee -a /var/log/jenkins_install.log; break; fi; sleep 5; done" ]

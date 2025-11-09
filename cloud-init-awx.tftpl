@@ -1,0 +1,13 @@
+#cloud-config
+package_update: true
+package_upgrade: false
+
+write_files:
+  - path: /usr/local/bin/install_awx_kind.sh
+    owner: root:root
+    permissions: '0755'
+    encoding: b64
+    content: ${script_b64}
+
+runcmd:
+  - [ bash, -lc, "/usr/local/bin/install_awx_kind.sh > /var/log/awx_install.log 2>&1" ]
