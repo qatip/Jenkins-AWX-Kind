@@ -1,4 +1,4 @@
-sub-id = "316f0ed4-2796-4561-a734-24b156826ae5"
+sub-id = "sub-id"
 resource_group_name = "RG1"
 vnet_name           = "rg1-vnet"
 subnet_name         = "default-subnet"
