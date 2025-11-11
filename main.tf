@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
     resource_group_name  = "RG6"
-    storage_account_name = "tfstate{suffix}"
+    storage_account_name = "tfstatef69a1dcd"
     container_name       = "tfstate"
     key                  = "jenkins-awx.tfstate"
   }
@@ -269,8 +269,7 @@ resource "azurerm_linux_virtual_machine" "vm2" {
     storage_account_type = "StandardSSD_LRS"
   }
 
-  # Placeholder: later you can install Docker/Kind/AWX via provisioners or cloud-init
-custom_data = base64encode(templatefile("${path.module}/cloud-init-awx.tftpl", {
+  custom_data = base64encode(templatefile("${path.module}/cloud-init-awx.tftpl", {
     script_b64 = base64encode(local.awx_install_script)
   }))
 
