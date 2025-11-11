@@ -19,7 +19,7 @@ pipeline {
 
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/qatip/jenkinsdemo.git'
+        git branch: 'main', url: '{replace me}'
       }
     }
 
@@ -87,7 +87,7 @@ PY
             def vmIp = env.NEW_VM_IP
             sh """
               set -e
-              AWX_URL="http://4.210.197.233:30080"
+              AWX_URL="http://{replace me}:30080"
               INVENTORY_ID=2
 
               echo "Creating host ${vmIp} in AWX inventory \$INVENTORY_ID ..."
@@ -112,7 +112,7 @@ PY
               script: """
                 set -e
 
-                AWX_URL="http://4.210.197.233:30080"
+                AWX_URL="http://{replace me}:30080"
                 JOB_TEMPLATE_ID=9
 
                 echo "Triggering AWX for host ${vmIp} ..."
