@@ -14,7 +14,7 @@ pipeline {
 
     stage('Checkout') {
       steps {
-        git branch: 'main', url: '{replace me}'
+        git branch: 'main', url: '<JENKINS REPO URL>'
       }
     }
 
