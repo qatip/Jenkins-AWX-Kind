@@ -7,4 +7,4 @@ variable "ssh_public_key_path" { default = "~/.ssh/azure_automation_rsa.pub" }
 variable "ssh_public_key" {
   description = "SSH public key text"
 }
-variable "sub-id" {}
+variable "subscription" {}
