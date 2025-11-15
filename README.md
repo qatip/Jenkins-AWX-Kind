@@ -4,3 +4,5 @@
 
 ### The lab demonstrates the use of Terraform/Jenkins/AWX Ansible to automate deployment and configuration of resources into Azure
 
+### Lab instructions are in labguide.pdf
+
