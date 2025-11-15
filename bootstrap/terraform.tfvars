@@ -1,4 +1,4 @@
-sub_id = "your subscription id here"
+subscription = "your subscription id here"
 location              = "westeurope"
 resource_group_name   = "backend_sa_rg"
 container_name        = "tfstate"
