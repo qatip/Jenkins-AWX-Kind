@@ -1,4 +1,4 @@
-# Jenkins/AWX Lab
+# Terraform/Jenkins/AWX Lab
 
 ## This repo is for educational purposes ONLY
 
