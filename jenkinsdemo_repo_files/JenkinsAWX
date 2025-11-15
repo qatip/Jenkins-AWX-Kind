@@ -81,7 +81,7 @@ PY
             sh """
               set -e
               AWX_URL="http://<AWX_VM_PUBLIC_IP>:30080"
-              INVENTORY_ID=2
+              INVENTORY_ID=<YOUR_INVENTORY_ID>
 
               echo "Creating host ${vmIp} in AWX inventory \$INVENTORY_ID ..."
 
@@ -106,7 +106,7 @@ PY
                 set -e
 
                 AWX_URL="http://<AWX_VM_PUBLIC_IP>:30080"
-                JOB_TEMPLATE_ID=9
+                JOB_TEMPLATE_ID=<YOUR_TEMPLATE_ID>
 
                 echo "Triggering AWX for host ${vmIp} ..."
 
