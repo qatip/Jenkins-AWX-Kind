@@ -2,5 +2,5 @@
 
 ## This repo is for educational purposes ONLY
 
-### This lab uses terraform/jenkins/AWX Ansible to automate deployments in Azure
+### The lab demonstrates the use of Terraform/Jenkins/AWX Ansible to automate deployment and configuration of resources into Azure
 
