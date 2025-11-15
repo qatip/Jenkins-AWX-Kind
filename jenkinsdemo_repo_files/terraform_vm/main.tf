@@ -15,7 +15,7 @@ terraform {
 
 provider "azurerm" {
   features {}
-  subscription_id = var.sub-id
+  subscription_id = var.subscription
 }
 
 # Look up existing network infrastructure
