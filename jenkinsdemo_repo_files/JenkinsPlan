@@ -41,7 +41,7 @@ PY
       }
     }
 
-    stage('Terraform Init, Plan, Apply') {
+    stage('Terraform Init and Plan') {
       steps {
         withCredentials([file(credentialsId: 'vm-pubkey-file', variable: 'PUBKEY_FILE')]) {
           sh '''
