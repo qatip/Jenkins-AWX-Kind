@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
     resource_group_name  = "backend_sa_rg"
-    storage_account_name = "storage account here"
+    storage_account_name = "tfstate86a6ca54"
     container_name       = "tfstate"
     key                  = "resources.tfstate"
   }
@@ -63,7 +63,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   admin_ssh_key {
     username   = var.admin_user
-    public_key = var.ssh_public_key    # ← no file() here now
+    public_key = var.ssh_public_key 
   }  
 
   os_disk {

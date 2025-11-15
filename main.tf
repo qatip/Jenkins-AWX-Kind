@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
     resource_group_name  = "backend_sa_rg"
-    storage_account_name = "storage account here"
+    storage_account_name = "tfstate86a6ca54"
     container_name       = "tfstate"
     key                  = "jenkins-awx.tfstate"
   }
@@ -19,18 +19,12 @@ provider "azurerm" {
   features {}
 }
 
-##########
-# Locals
-#########
-
 locals {
   awx_install_script = replace(file("${path.module}/install_awx_kind.sh"), "\r", "")
   jenkins_script_raw = replace(file("${path.module}/install_jenkins_azure.sh"), "\r", "")
 }
 
-#########################
 # Resource Group
-#########################
 resource "azurerm_resource_group" "rg" {
   name     = var.rg_name
   location = var.location
@@ -40,9 +34,7 @@ resource "azurerm_resource_group" "rg" {
   }
 }
 
-#########################
 # Network + Shared NSG
-#########################
 resource "azurerm_virtual_network" "vnet" {
   name                = "lab-vnet"
   address_space       = [var.vnet_address_space]
@@ -142,16 +134,12 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
-
-# Associate NSG to the subnet so both VMs share the same rules
 resource "azurerm_subnet_network_security_group_association" "subnet_assoc" {
   subnet_id                 = azurerm_subnet.subnet.id
   network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
-#########################
 # Public IPs
-#########################
 resource "azurerm_public_ip" "vm1_pip" {
   name                = "vm1-pip"
   location            = azurerm_resource_group.rg.location
@@ -168,9 +156,7 @@ resource "azurerm_public_ip" "vm2_pip" {
   sku                 = "Standard"
 }
 
-#########################
 # NICs
-#########################
 resource "azurerm_network_interface" "vm1_nic" {
   name                = "vm1-nic"
   location            = azurerm_resource_group.rg.location
@@ -197,9 +183,7 @@ resource "azurerm_network_interface" "vm2_nic" {
   }
 }
 
-#########################
 # VM1 (Jenkins host)
-#########################
 resource "azurerm_linux_virtual_machine" "vm1" {
   name                = "VM1"
   resource_group_name = azurerm_resource_group.rg.name
@@ -238,9 +222,7 @@ custom_data = base64encode(
   }
 }
 
-#########################
 # VM2 (AWX host)
-#########################
 resource "azurerm_linux_virtual_machine" "vm2" {
   name                = "VM2"
   resource_group_name = azurerm_resource_group.rg.name
@@ -276,38 +258,5 @@ resource "azurerm_linux_virtual_machine" "vm2" {
   tags = {
     Role = "AWX"
   }
-}
-
-#########################
-# Outputs
-#########################
-output "vm1_public_ip" {
-  value       = azurerm_public_ip.vm1_pip.ip_address
-  description = "Public IP for VM1 (Jenkins)"
-}
-
-output "vm2_public_ip" {
-  value       = azurerm_public_ip.vm2_pip.ip_address
-  description = "Public IP for VM2 (AWX)"
-}
-
-output "ssh_examples" {
-  description = "Ready-to-use SSH commands"
-  value = [
-    "ssh ${var.admin_username}@${azurerm_public_ip.vm1_pip.ip_address}",
-    "ssh ${var.admin_username}@${azurerm_public_ip.vm2_pip.ip_address}"
-  ]
-}
-
-# Bash / macOS / Linux
-output "ssh_get_jenkins_password_bash" {
-  value = "ssh -i ~/.ssh/azure_automation_rsa ${var.admin_username}@${azurerm_public_ip.vm1_pip.ip_address} 'sudo cat /var/lib/jenkins/secrets/initialAdminPassword'"
-}
-
-# Windows PowerShell (uses $env:USERPROFILE)
-output "ssh_get_jenkins_password_powershell" {
-  value = <<EOT
-ssh -i "$env:USERPROFILE\\.ssh\\azure_automation_rsa" ${var.admin_username}@${azurerm_public_ip.vm1_pip.ip_address} "sudo cat /var/lib/jenkins/secrets/initialAdminPassword"
-EOT
 }
 

@@ -1,6 +1,6 @@
 sub-id = "your subscription id here"
 resource_group_name = "RG6"
-vnet_name           = "rg1-vnet"
+vnet_name           = "lab-vnet"
 subnet_name         = "default-subnet"
 vm_name             = "VM3"
 admin_user          = "azureuser"
