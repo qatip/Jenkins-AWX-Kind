@@ -52,7 +52,7 @@ PY
         withCredentials([file(credentialsId: 'vm-pubkey-file', variable: 'PUBKEY_FILE')]) {
           sh '''
             set -e
-            cd terraform-vm
+            cd terraform_vm
 
             # read the public key content and pass to TF
             PUBKEY_CONTENT=$(cat "$PUBKEY_FILE")
@@ -60,7 +60,8 @@ PY
 
             terraform init -input=false -reconfigure
             terraform validate
-            terraform destroy -auto-approve 
+            terraform plan -out=tfplan
+            terraform apply -auto-approve tfplan
           '''
         }
       }

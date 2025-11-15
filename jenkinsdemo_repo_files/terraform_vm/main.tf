@@ -1,14 +1,14 @@
 terraform {
   backend "azurerm" {
-    resource_group_name  = "RG6"
-    storage_account_name = "{replace me}"
+    resource_group_name  = "backend_sa_rg"
+    storage_account_name = "storage account here"
     container_name       = "tfstate"
     key                  = "resources.tfstate"
   }
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.107.0"
+      version = "4.53.0"
     }
   }
 }
@@ -55,7 +55,7 @@ resource "azurerm_public_ip" "vm3_pip" {
 # VM
 resource "azurerm_linux_virtual_machine" "vm" {
   name                  = var.vm_name
-  resource_group_name   = var.resource_group_name
+  resource_group_name   = "RG6"
   location              = data.azurerm_resource_group.rg.location
   size                  = "Standard_B2s"
   admin_username        = var.admin_user

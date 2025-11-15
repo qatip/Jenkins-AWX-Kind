@@ -16,32 +16,6 @@ provider "azurerm" {
   subscription_id = var.sub_id
 }
 
-# ---------- VARIABLES ----------
-variable "sub_id" {
-  description = "Subscription ID to create the backend resources in"
-}
-
-variable "location" {
-  description = "Azure region for the backend RG and storage"
-  default     = "westeurope"
-}
-
-variable "resource_group_name" {
-  description = "Name of the Resource Group for Terraform backend storage"
-  default     = "tfstate-rg"
-}
-
-# optional override; if you leave it empty, we'll generate one
-variable "storage_account_name" {
-  description = "Globally unique storage account name (lowercase, 3-24 chars). Leave blank to auto-generate."
-  default     = ""
-}
-
-variable "container_name" {
-  description = "Blob container name for Terraform state files"
-  default     = "tfstate"
-}
-
 # ---------- RANDOM SUFFIX ----------
 resource "random_id" "suffix" {
   byte_length = 4

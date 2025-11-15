@@ -52,7 +52,7 @@ PY
         withCredentials([file(credentialsId: 'vm-pubkey-file', variable: 'PUBKEY_FILE')]) {
           sh '''
             set -e
-            cd terraform-vm
+            cd terraform_vm
 
             # read the public key content and pass to TF
             PUBKEY_CONTENT=$(cat "$PUBKEY_FILE")
@@ -71,7 +71,7 @@ PY
       steps {
         script {
           def vmIp = sh(
-            script: 'cd terraform-vm && terraform output -raw vm_private_ip',
+            script: 'cd terraform_vm && terraform output -raw vm_private_ip',
             returnStdout: true
           ).trim()
           echo "VM private IP: ${vmIp}"

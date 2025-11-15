@@ -1,7 +1,7 @@
 terraform {
   backend "azurerm" {
-    resource_group_name  = "RG6"
-    storage_account_name = "tfstatef69a1dcd"
+    resource_group_name  = "backend_sa_rg"
+    storage_account_name = "storage account here"
     container_name       = "tfstate"
     key                  = "jenkins-awx.tfstate"
   }
@@ -35,8 +35,8 @@ resource "azurerm_resource_group" "rg" {
   name     = var.rg_name
   location = var.location
   tags = {
-    Project = "Jenkins-AWX"
-    Owner   = "Michael"
+    Project = "Jenkins_AWX"
+    Owner   = "Michael_CG"
   }
 }
 
@@ -44,7 +44,7 @@ resource "azurerm_resource_group" "rg" {
 # Network + Shared NSG
 #########################
 resource "azurerm_virtual_network" "vnet" {
-  name                = "rg1-vnet"
+  name                = "lab-vnet"
   address_space       = [var.vnet_address_space]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -59,7 +59,7 @@ resource "azurerm_subnet" "subnet" {
 
 
 resource "azurerm_network_security_group" "nsg" {
-  name                = "rg1-nsg-shared"
+  name                = "lab-nsg-shared"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 

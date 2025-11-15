@@ -27,7 +27,7 @@
         group: www-data
         mode: '0755'
 
-    - name: Deploy Nationwide demo homepage
+    - name: Deploy demo homepage
       copy:
         src: files/index.html
         dest: "{{ web_root }}/index.html"

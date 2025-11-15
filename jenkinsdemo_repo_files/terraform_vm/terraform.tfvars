@@ -1,5 +1,5 @@
-sub-id = "{replace me}"
-resource_group_name = "RG5"
+sub-id = "your subscription id here"
+resource_group_name = "RG6"
 vnet_name           = "rg1-vnet"
 subnet_name         = "default-subnet"
 vm_name             = "VM3"

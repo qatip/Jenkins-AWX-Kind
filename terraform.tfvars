@@ -1,6 +1,6 @@
-subscription = "316f0ed4-2796-4561-a734-24b156826ae5"
+subscription = "your subscription id here"
 location = "westeurope"
-rg_name = "RG5"
+rg_name = "RG6"
 admin_username = "azureuser"
 ssh_public_key_path = "~/.ssh/azure_automation_rsa.pub"
 vm1_size = "Standard_D2s_v3"

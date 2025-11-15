@@ -1,4 +1,4 @@
-sub_id = "316f0ed4-2796-4561-a734-24b156826ae5"
+sub_id = "your subscription id here"
 location              = "westeurope"
-resource_group_name   = "RG6"
+resource_group_name   = "backend_sa_rg"
 container_name        = "tfstate"
